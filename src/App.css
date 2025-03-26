@@ -1,0 +1,12 @@
+:root {
+    font-family: Verdana, Tahoma, sans-serif;
+    font-size: 16px;
+    --primary-text-color: #27251f;
+    --secondary-text-color: #c4ced4;
+    --primary-color: #ffb81d;
+    --secondary-color: #ebdf5e;
+    --background-color: #ffffff;
+    --dark-background-color: rgba(39, 37, 31, 0.7);
+    --hover-color: #73b7d9;
+    --success-color: #aec97e;
+}

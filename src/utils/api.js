@@ -1,33 +1,33 @@
-const API_URL = 'http://localhost:8000'; // Замените на URL вашего бэкенда
+import { API_URL } from "./config";
+import CustomError from "./customError";
 
-// Функция для получения всех подарков
 export const getGifts = async () => {
     const response = await fetch(`${API_URL}/gifts/`);
     if (!response.ok) {
-        throw new Error('Ошибка при получении подарков');
+        const errorText = await response.text();
+        throw new CustomError(response.status, response.statusText, errorText, 'Ошибка при получении подарков');
     }
     return await response.json();
 };
 
-// Функция для получения подарка по ID
 export const getGiftById = async (id) => {
     const response = await fetch(`${API_URL}/gifts/${id}`);
     if (!response.ok) {
-        throw new Error('Ошибка при получении подарка');
+        const errorText = await response.text();
+        throw new CustomError(response.status, response.statusText, errorText, 'Ошибка при получении подарка');
     }
     return await response.json();
 };
 
-// Функция для получения подарков пользователя по ID
 export const getGiftsByUserId = async (userId) => {
     const response = await fetch(`${API_URL}/gifts/user/${userId}`);
     if (!response.ok) {
-        throw new Error('Ошибка при получении подарков пользователя');
+        const errorText = await response.text();
+        throw new CustomError(response.status, response.statusText, errorText, 'Ошибка при получении подарков пользователя');
     }
     return await response.json();
 };
 
-// Функция для регистрации нового пользователя
 export const registerUser = async (userData) => {
     const response = await fetch(`${API_URL}/register`, {
         method: 'POST',
@@ -37,68 +37,79 @@ export const registerUser = async (userData) => {
         body: JSON.stringify(userData),
     });
     if (!response.ok) {
-        throw new Error('Ошибка при регистрации пользователя');
+        const errorText = await response.text();
+        throw new CustomError(response.status, response.statusText, errorText, 'Ошибка при регистрации пользователя');
     }
     return await response.json();
 };
 
-// Функция для авторизации пользователя
 export const loginUser = async (credentials) => {
+    const formData = new FormData();
+    formData.append('username', credentials.username);
+    formData.append('password', credentials.password);
+
     const response = await fetch(`${API_URL}/login`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams(credentials),
+        credentials: "include",
+        body: formData,
     });
+
     if (!response.ok) {
-        throw new Error('Ошибка при авторизации пользователя');
+        const errorText = await response.text();
+        throw new CustomError(response.status, response.statusText, errorText, 'Ошибка при авторизации пользователя');
     }
     return await response.json();
 };
 
-// Функция для добавления нового подарка
-export const addGift = async (giftData, token) => {
+export const addGift = async (giftData) => {
+    // console.log(giftData, token);
+    const token = localStorage.getItem('_access_token');
     const response = await fetch(`${API_URL}/gifts/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
         },
+        credentials: "include",
         body: JSON.stringify(giftData),
     });
     if (!response.ok) {
-        throw new Error('Ошибка при добавлении подарка');
+        const errorText = await response.text();
+        throw new CustomError(response.status, response.statusText, errorText, 'Ошибка при добавлении подарка');
     }
     return await response.json();
 };
 
-// Функция для обновления подарка
-export const updateGift = async (id, giftData, token) => {
+export const updateGift = async (id, giftData) => {
+    // const token = localStorage.getItem('_access_token');
     const response = await fetch(`${API_URL}/gifts/${id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
+            // 'Authorization': `Bearer ${token}`,
         },
+        // credentials: "include",
         body: JSON.stringify(giftData),
     });
     if (!response.ok) {
-        throw new Error('Ошибка при обновлении подарка');
+        const errorText = await response.text();
+        throw new CustomError(response.status, response.statusText, errorText, 'Ошибка при обновлении подарка');
     }
     return await response.json();
 };
 
-// Функция для удаления подарка
-export const deleteGift = async (id, token) => {
+export const deleteGift = async (id) => {
+    const token = localStorage.getItem('_access_token');
     const response = await fetch(`${API_URL}/gifts/${id}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${token}`,
         },
+        credentials: "include",
     });
     if (!response.ok) {
-        throw new Error('Ошибка при удалении подарка');
+        const errorText = await response.text();
+        throw new CustomError(response.status, response.statusText, errorText, 'Ошибка при удалении подарка');
     }
     return await response.json();
 };
