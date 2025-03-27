@@ -74,7 +74,7 @@ const ListGifts = ({ isAuthenticated }) => {
                     </ul>
                     {isAuthenticated && (
                         <button className="list-gifts__add" onClick={toggleAddGiftPopup}>
-                            Добавить подарок (Только с Ozon)
+                            Добавить подарок (только Ozon)
                         </button>
                     )}
                 </div>

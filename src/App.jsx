@@ -67,10 +67,6 @@ function App() {
     return teporaryUserId;
   }
 
-  useEffect(() => {
-
-  }, [])
-
   return (
     <AuthContext.Provider value={isAuthenticated}>
       <UserIdContext.Provider value={userId}>
