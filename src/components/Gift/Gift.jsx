@@ -5,7 +5,7 @@ import { AuthContext } from '../../contexts/AuthContext';
 import { UserIdContext } from '../../contexts/UserIdContext';
 import { getGiftById } from '../../utils/api';
 
-const Gift = ({ gift: initialGift }) => {
+const Gift = ({ gift: initialGift, onDelete }) => {
     const [gift, setGift] = useState(initialGift);
     const [isReserving, setIsReserving] = useState(false);
     const [isClickable, setIsClickable] = useState(true);
@@ -14,10 +14,14 @@ const Gift = ({ gift: initialGift }) => {
     const userId = useContext(UserIdContext);
     const timerRef = useRef(null);
 
-    const isOwner = (gift) => {
+    const isReserveOwner = (gift) => {
         return gift.reserve_owner === userId || gift.reserve_owner === localStorage.getItem("_temporaryUserId");
     }
-    
+
+    const isOwner = (gift) => {
+        return gift.user_id === userId;
+    }
+
     const handleClick = (e) => {
         if (!isActive && !isReserving && isClickable) {
             window.open(gift.link, '_blank');
@@ -41,7 +45,7 @@ const Gift = ({ gift: initialGift }) => {
                     setGiftUpdated(!giftUpdated);
                 }, 1000);
             }
-            else if (isOwner(gift)) {
+            else if (isReserveOwner(gift)) {
                 setIsReserving(true);
                 timerRef.current = setTimeout(async () => {
                     const updatedGift = {
@@ -70,6 +74,11 @@ const Gift = ({ gift: initialGift }) => {
         }
     };
 
+    const onDeleteGift = async (e) => {
+        e.stopPropagation();
+        if (isOwner(gift)) onDelete(gift.id);
+    }
+
     useEffect(() => {
         getGiftById(gift.id)
             .then((data) => {
@@ -85,12 +94,12 @@ const Gift = ({ gift: initialGift }) => {
             className={`gift ${isActive ? 'gift--reserved' : ''} ${isReserving ? 'gift--reserving' : ''}`}
             onClick={handleClick}
             onMouseDown={handleMouseDown}
-            
+
             onMouseUp={handleMouseUp}
         >
             <div className="gift__fill"></div>
             <div className="cover"><p className="cover__text">
-                {isOwner(gift) ? "Вы подарите" :"Кто-то уже дарит"}</p></div>
+                {isReserveOwner(gift) ? "Вы подарите" : "Кто-то уже дарит"}</p></div>
             <div className="gift__photo-wrap">
                 <img src={gift.photo} alt={gift.name} className="gift__photo" />
             </div>
@@ -105,6 +114,10 @@ const Gift = ({ gift: initialGift }) => {
                     <span className="gift-cost">{gift.cost > 0 ? `${gift.cost} ₽` : "Не известно"}</span>
                 </div>
             </div>
+            {
+                isOwner(gift) &&
+                <button className="gift__delete" type='button' onClick={onDeleteGift}>Удалить</button>
+            }
         </li>
     );
 };

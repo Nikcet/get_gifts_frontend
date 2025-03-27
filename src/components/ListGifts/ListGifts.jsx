@@ -4,6 +4,7 @@ import './ListGifts.css';
 import { useParams } from 'react-router-dom';
 import { getGifts, getGiftsByUserId, addGift } from '@/utils/api';
 import Popup from '@/components/Popup/Popup';
+import { deleteGift } from '../../utils/api';
 
 const ListGifts = ({ isAuthenticated }) => {
     const params = useParams();
@@ -44,6 +45,11 @@ const ListGifts = ({ isAuthenticated }) => {
         }
     };
 
+    const onDeleteGift = async (giftId) => {
+        await deleteGift(giftId);
+        fetchGifts(userId);
+    }
+
     return (
         <div className="list-gifts-container">
             {gifts.length === 0 ? (
@@ -62,11 +68,12 @@ const ListGifts = ({ isAuthenticated }) => {
                             <Gift
                                 key={gift.id}
                                 gift={gift}
+                                onDelete={onDeleteGift}
                             />
                         ))}
                     </ul>
                     {isAuthenticated && (
-                        <button onClick={toggleAddGiftPopup}>
+                        <button className="list-gifts__add" onClick={toggleAddGiftPopup}>
                             Добавить подарок (Только с Ozon)
                         </button>
                     )}

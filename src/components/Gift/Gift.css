@@ -125,6 +125,12 @@
     display: flex;
 }
 
+.gift__delete {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+
 
 @keyframes fillAnimation {
     0% {
