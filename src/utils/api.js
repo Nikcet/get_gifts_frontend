@@ -43,15 +43,15 @@ export const registerUser = async (userData) => {
     return await response.json();
 };
 
-export const loginUser = async (credentials) => {
-    const formData = new FormData();
-    formData.append('username', credentials.username);
-    formData.append('password', credentials.password);
-
+export const loginUser = async (userData) => {
+    
     const response = await fetch(`${API_URL}/login`, {
         method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
         credentials: "include",
-        body: formData,
+        body:  JSON.stringify(userData),
     });
 
     if (!response.ok) {
@@ -81,14 +81,11 @@ export const addGift = async (giftData) => {
 };
 
 export const updateGift = async (id, giftData) => {
-    // const token = localStorage.getItem('_access_token');
     const response = await fetch(`${API_URL}/gifts/${id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
-            // 'Authorization': `Bearer ${token}`,
         },
-        // credentials: "include",
         body: JSON.stringify(giftData),
     });
     if (!response.ok) {
