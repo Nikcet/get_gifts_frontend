@@ -11,6 +11,7 @@ const RegisterForm = () => {
                     className="form__input"
                     type="text"
                     id="username"
+                    name='username'
                     placeholder='Латиницей, можно вводить любой'
                     required
                 />
@@ -21,6 +22,7 @@ const RegisterForm = () => {
                     className="form__input"
                     type="password"
                     id="password"
+                    name='password'
                     placeholder='Пока что любой'
                     required
                 />
@@ -30,6 +32,7 @@ const RegisterForm = () => {
                 <input
                     className="form__input"
                     type="password"
+                    name='confirmPassword'
                     id="confirm-password"
                     placeholder='Не забудьте потом, восстановить не получится'
                     required
