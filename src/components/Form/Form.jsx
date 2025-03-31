@@ -31,12 +31,12 @@ const Form = ({ title, children, setIsAuth }) => {
                     }
                     formData.username = el.value;
                 } else if (el.id === 'password') {
-                    if (isStrongPassword(el.value)) {
+                    if (!isStrongPassword(el.value)) {
                         throw new Error("Пароль слишком слабый");
                     }
                     formData.password = el.value;
                 } else if (el.id === 'confirm-password') {
-                    if (equals(formData.password, el.value)) {
+                    if (!equals(formData.password, el.value)) {
                         throw new Error("Пароли не совпадают");
                     }
                     formData.confirmPassword = el.value;
