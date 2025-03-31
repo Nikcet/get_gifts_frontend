@@ -17,8 +17,6 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(isLogin());
   const [userId, setUserId] = useState(getOrCreateTemporaryUserId());
 
-  // const isAuthContext = createContext(isAuthenticated);
-  // const userIdContext = createContext(userId);
 
   const navigate = useNavigate();
 
