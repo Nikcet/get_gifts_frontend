@@ -1,0 +1,40 @@
+.login-form {
+    display: flex;
+    flex-direction: column; /* Элементы располагаются столбиком */
+}
+
+.login-form__title {
+    font-size: 24px; /* Размер заголовка */
+    margin-bottom: 20px; /* Отступ снизу */
+    text-align: center; /* Центрирование заголовка */
+}
+
+.login-form__field {
+    margin-bottom: 15px; /* Отступ между полями */
+}
+
+.login-form__label {
+    display: block; /* Блочный элемент для метки */
+    margin-bottom: 5px; /* Отступ снизу */
+}
+
+.login-form__input {
+    width: 100%; /* Ширина поля ввода */
+    padding: 10px; /* Отступы внутри поля */
+    border: 1px solid #ccc; /* Граница поля */
+    border-radius: 4px; /* Закругленные углы */
+}
+
+.login-form__button {
+    padding: 10px; /* Отступы внутри кнопки */
+    background-color: #007bff; /* Цвет фона кнопки */
+    color: white; /* Цвет текста */
+    border: none; /* Без границы */
+    border-radius: 4px; /* Закругленные углы */
+    cursor: pointer; /* Указатель при наведении */
+    transition: background-color 0.3s; /* Плавный переход цвета */
+}
+
+.login-form__button:hover {
+    background-color: #0056b3; /* Цвет кнопки при наведении */
+}

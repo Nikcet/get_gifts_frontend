@@ -1,0 +1,153 @@
+.gift {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border-radius: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 1px 1px 5px var(--primary-color);
+    cursor: pointer;
+    transition: 0.3s ease;
+    position: relative;
+    color: var(--primary-text-color);
+}
+
+.gift:hover {
+    /* opacity: .7; */
+    box-shadow: 1px 1px 5px var(--hover-color);
+}
+
+
+.gift__photo {
+    width: 100%;
+    height: 100%;
+    border-radius: 1rem;
+    object-fit: cover;
+}
+
+.gift__photo-wrap {
+    display: flex;
+    width: 30%;
+    max-width: 200px;
+    height: 200px;
+    margin-right: 3rem;
+}
+
+.gift__info {
+    width: 70%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    white-space: nowrap;
+
+}
+
+.gift__name {
+    font-size: 1rem;
+    text-overflow: ellipsis;
+    overflow: hidden;
+
+}
+
+.gift__link {
+    color: var(--text-color);
+    text-decoration: none;
+    margin-bottom: 5px;
+}
+
+.gift__link-wrap {
+    margin-bottom: 2rem;
+}
+
+.gift__link:hover {
+    text-decoration: underline;
+}
+
+
+.gift--reserving .gift__fill {
+    animation: fillAnimation 1s linear forwards;
+}
+
+.gift__fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background-color: rgba(39, 37, 31, 0.2);
+    z-index: 1;
+}
+
+.gift__photo-wrap,
+.gift__info {
+    position: relative;
+    z-index: 1;
+}
+
+.gift_is-reserved {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+}
+
+.gift__cost {
+    background-color: var(--primary-color);
+    box-sizing: border-box;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    width: fit-content;
+}
+
+.cover {
+    display: none;
+    position: absolute;
+    right: 0.5rem;
+    bottom: 0.5rem;
+    background-color: var(--success-color);
+    color: var(--primary-text-color);
+    width: fit-content;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+}
+
+.cover__text {
+    margin: 0;
+}
+
+
+.gift--reserved .cover {
+    display: flex;
+}
+
+.gift__delete {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+
+
+@keyframes fillAnimation {
+    0% {
+        width: 0;
+    }
+
+    100% {
+        width: 100%;
+    }
+}
+
+@keyframes refillAnimation {
+    0% {
+        width: 100%;
+    }
+
+    100% {
+        width: 0;
+    }
+}
