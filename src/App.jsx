@@ -1,5 +1,5 @@
 import { Routes, Route, useNavigate } from 'react-router-dom';
-import { useState, useEffect, createContext } from 'react';
+import { useState } from 'react';
 import { generate } from 'short-uuid';
 import Header from '@/components/Header/Header';
 import RegisterForm from './components/Form/RegisterForm/RegisterForm';
@@ -7,9 +7,24 @@ import LoginForm from './components/Form/LoginForm/LoginForm';
 import Form from './components/Form/Form';
 import Popup from './components/Popup/Popup';
 import ListGifts from '@/components/ListGifts/ListGifts';
-import './App.css';
+import Start from './components/Start/Start';
+import Footer from './components/Footer/Footer';
+// import './App.css';
 import { AuthContext } from './contexts/AuthContext';
 import { UserIdContext } from './contexts/UserIdContext';
+import { createTheme, ThemeProvider, CssBaseline, Box } from '@mui/material';
+
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+    primary: {
+      main: '#1976d2',
+    },
+    secondary: {
+      main: '#9c27b0',
+    },
+  },
+});
 
 function App() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -35,7 +50,16 @@ function App() {
   };
 
   const renderForm = () => {
-    return formType === 'login' ? <LoginForm onLoginSuccess={handleLoginSuccess} /> : <RegisterForm />;
+    return formType === 'login' ? (
+      <LoginForm
+        onLoginSuccess={handleLoginSuccess}
+        onSwitchToRegister={() => setFormType('register')}
+      />
+    ) : (
+      <RegisterForm
+        onSwitchToLogin={() => setFormType('login')}
+      />
+    );
   };
 
   const logout = async () => {
@@ -68,22 +92,38 @@ function App() {
   return (
     <AuthContext.Provider value={isAuthenticated}>
       <UserIdContext.Provider value={userId}>
-        <div className='app'>
-          <Header
-            isAuthenticated={isAuthenticated}
-            onLogout={logout}
-            onLogin={() => openPopup('login')}
-            onRegister={() => openPopup('register')}
-          />
-          <Popup isOpen={isPopupOpen} onClose={closePopup}>
-            <Form title={formType === 'login' ? 'Вход' : 'Регистрация'} setIsAuth={handleLoginSuccess}>
-              {renderForm()}
-            </Form>
-          </Popup>
-          <Routes>
-            <Route path="/gifts/user/:userId" element={<ListGifts isAuthenticated={isAuthenticated} />} />
-            <Route path="/" element={<ListGifts isAuthenticated={isAuthenticated} />} />
-          </Routes>
+        <div className='app' style={{ display: 'flex', flexDirection: 'column', minHeight: "100vh" }}>
+          <ThemeProvider theme={darkTheme}>
+            <CssBaseline />
+            <Header
+              isAuthenticated={isAuthenticated}
+              onLogout={logout}
+              onLogin={() => openPopup('login')}
+              onRegister={() => openPopup('register')}
+            />
+            <Popup
+              isOpen={isPopupOpen}
+              onClose={closePopup}
+            >
+              <Form
+                title={formType === 'login' ? 'Вход' : 'Регистрация'}
+                setIsAuth={handleLoginSuccess}
+              >
+                {renderForm()}
+              </Form>
+            </Popup>
+
+            <Box sx={{ flex: 1 }} component='main'>
+              <Routes>
+                <Route path="/gifts/user/:userId" element={<ListGifts isAuthenticated={isAuthenticated} />} />
+                <Route path="/" element={
+                  <Start onRegister={() => openPopup('register')} />
+                } />
+                {/* <Route path="/" element={<ListGifts isAuthenticated={isAuthenticated} />} /> */}
+              </Routes>
+            </Box>
+            <Footer />
+          </ThemeProvider>
         </div>
       </UserIdContext.Provider>
     </AuthContext.Provider>

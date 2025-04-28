@@ -1,23 +1,44 @@
 import React from 'react';
 import "./Header.css";
+import { AppBar, Toolbar, Typography, Button, Link } from '@mui/material';
 
 
 
 const Header = ({ isAuthenticated, onLogout, onRegister, onLogin }) => {
     return (
-        <header className="header">
-            <div className="header__logo">Wishly</div>
-            <div className="header__button-container">
+        <AppBar position="static" color="primary" elevation={0}>
+            <Toolbar>
+                <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 700 }}>
+                    Whishes Book
+                </Typography>
                 {!isAuthenticated ? (
                     <>
-                        <button className="header__button" onClick={onLogin}>Войти</button>
-                        <button className="header__button" onClick={onRegister}>Регистрация</button>
+                        <Button
+                            color="inherit"
+                            onClick={onLogin}
+                            sx={{ mr: 1 }}
+                        >
+                            Войти
+                        </Button>
+                        <Button
+                            variant="outlined"
+                            color="inherit"
+                            onClick={onRegister}
+                        >
+                            Регистрация
+                        </Button>
                     </>
                 ) : (
-                    <button className="header__button" onClick={onLogout}>Выйти</button>
+                    <Button
+                        variant="outlined"
+                        color="inherit"
+                        onClick={onLogout}
+                    >
+                        Выйти
+                    </Button>
                 )}
-            </div>
-        </header>
+            </Toolbar>
+        </AppBar>
     );
 };
 

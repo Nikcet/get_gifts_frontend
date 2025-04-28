@@ -1,10 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import Gift from '@/components/Gift/Gift';
-import './ListGifts.css';
+// import './ListGifts.css';
 import { useParams } from 'react-router-dom';
 import { getGifts, getGiftsByUserId, addGift } from '@/utils/api';
 import Popup from '@/components/Popup/Popup';
 import { deleteGift } from '../../utils/api';
+import {
+    Box,
+    Button,
+    Typography,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    TextField,
+    CircularProgress
+} from '@mui/material';
 
 const ListGifts = ({ isAuthenticated }) => {
     const params = useParams();
@@ -38,10 +48,11 @@ const ListGifts = ({ isAuthenticated }) => {
         try {
             await addGift({ link: giftLink });
             setGiftLink('');
-            toggleAddGiftPopup();
-            fetchGifts(userId);
         } catch (err) {
             console.log("Ошибка при добавлении подарка: ", err);
+        } finally {
+            toggleAddGiftPopup();
+            fetchGifts(userId);
         }
     };
 
@@ -51,19 +62,25 @@ const ListGifts = ({ isAuthenticated }) => {
     }
 
     return (
-        <div className="list-gifts-container">
+        <Box sx={{ maxWidth: 800, mx: 'auto', p: 2 }}>
             {gifts.length === 0 ? (
-                <div>
-                    <p className="no-gifts-message">Нет ни одного подарка! 😢</p>
+                <Box sx={{ textAlign: 'center', mt: 4 }}>
+                    <Typography variant="h6" gutterBottom>
+                        Нет ни одного подарка! 😢
+                    </Typography>
                     {isAuthenticated && (
-                        <button onClick={toggleAddGiftPopup}>
+                        <Button
+                            variant="contained"
+                            onClick={toggleAddGiftPopup}
+                            sx={{ mt: 2 }}
+                        >
                             Добавить подарок (Только с Ozon)
-                        </button>
+                        </Button>
                     )}
-                </div>
+                </Box>
             ) : (
-                <div>
-                    <ul className="list-gifts">
+                <Box>
+                    <Box component="ul" sx={{ p: 0, m: 0 }}>
                         {gifts.map((gift) => (
                             <Gift
                                 key={gift.id}
@@ -71,29 +88,44 @@ const ListGifts = ({ isAuthenticated }) => {
                                 onDelete={onDeleteGift}
                             />
                         ))}
-                    </ul>
+                    </Box>
                     {isAuthenticated && (
-                        <button className="list-gifts__add" onClick={toggleAddGiftPopup}>
-                            Добавить подарок (только Ozon)
-                        </button>
+                        <Box sx={{ textAlign: 'center', mt: 2 }}>
+                            <Button
+                                variant="contained"
+                                onClick={toggleAddGiftPopup}
+                            >
+                                Добавить подарок (только Ozon)
+                            </Button>
+                        </Box>
                     )}
-                </div>
-
+                </Box>
             )}
-            <Popup isOpen={isAddGiftPopupOpen} onClose={toggleAddGiftPopup}>
-                <form onSubmit={handleAddGift}>
-                    <h2>Добавить подарок</h2>
-                    <input
-                        type="text"
-                        placeholder="Ссылка на подарок"
-                        value={giftLink}
-                        onChange={(e) => setGiftLink(e.target.value)}
-                        required
-                    />
-                    <button type="submit">Добавить</button>
-                </form>
-            </Popup>
-        </div>
+
+            <Dialog open={isAddGiftPopupOpen} onClose={toggleAddGiftPopup}>
+                <DialogTitle>Добавить подарок</DialogTitle>
+                <DialogContent>
+                    <Box component="form" onSubmit={handleAddGift} sx={{ mt: 1 }}>
+                        <TextField
+                            fullWidth
+                            margin="normal"
+                            label="Ссылка на подарок"
+                            value={giftLink}
+                            onChange={(e) => setGiftLink(e.target.value)}
+                            required
+                        />
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            sx={{ mt: 3, mb: 2 }}
+                        >
+                            Добавить
+                        </Button>
+                    </Box>
+                </DialogContent>
+            </Dialog>
+        </Box>
     );
 };
 
