@@ -62,7 +62,6 @@ export const loginUser = async (userData) => {
 };
 
 export const addGift = async (giftData) => {
-    // console.log(giftData, token);
     const token = localStorage.getItem('_access_token');
     const response = await fetch(`${API_URL}/gifts/`, {
         method: 'POST',
@@ -73,19 +72,23 @@ export const addGift = async (giftData) => {
         credentials: "include",
         body: JSON.stringify(giftData),
     });
+
     if (!response.ok) {
-        const errorText = await response.text();
+        const errorText = response.text();
         throw new CustomError(response.status, response.statusText, errorText, 'Ошибка при добавлении подарка');
     }
     return await response.json();
 };
 
 export const updateGift = async (id, giftData) => {
+    const token = localStorage.getItem('_access_token');
     const response = await fetch(`${API_URL}/gifts/${id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
         },
+        credentials: "include",
         body: JSON.stringify(giftData),
     });
     if (!response.ok) {
