@@ -6,7 +6,8 @@ import {
     Button,
     Box,
     Chip,
-    Stack
+    Stack,
+    CircularProgress
 } from '@mui/material';
 import { useState, useContext } from 'react';
 import { UserIdContext } from '../../contexts/UserIdContext';
@@ -20,8 +21,12 @@ const Gift = ({ gift: initialGift, onDelete }) => {
     const [isReserveOwner, setIsReserveOwner] = useState(
         gift.reserve_owner === userId || gift.reserve_owner === localStorage.getItem("_temporaryUserId")
     );
+    const [isReserving, setIsReserving] = useState(false);
+    const [isUnreserving, setIsUnreserving] = useState(false);
 
-    const handleReserve = async () => {
+    const handleReserve = async (e) => {
+        e.stopPropagation();
+        setIsReserving(true);
         try {
             const updatedGift = {
                 ...gift,
@@ -33,10 +38,14 @@ const Gift = ({ gift: initialGift, onDelete }) => {
             setIsReserveOwner(true);
         } catch (err) {
             console.error('Ошибка при резервировании:', err);
+        } finally {
+            setIsReserving(false);
         }
     };
 
-    const handleUnreserve = async () => {
+    const handleUnreserve = async (e) => {
+        e.stopPropagation();
+        setIsUnreserving(true);
         try {
             const updatedGift = {
                 ...gift,
@@ -48,6 +57,8 @@ const Gift = ({ gift: initialGift, onDelete }) => {
             setIsReserveOwner(false);
         } catch (err) {
             console.error('Ошибка при снятии резерва:', err);
+        } finally {
+            setIsUnreserving(false);
         }
     };
 
@@ -116,22 +127,18 @@ const Gift = ({ gift: initialGift, onDelete }) => {
                             <Button
                                 variant="outlined"
                                 color="error"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleUnreserve();
-                                }}
+                                onClick={handleUnreserve}
+                                disabled={isUnreserving}
                             >
-                                Не подарю
+                                {isUnreserving ? <CircularProgress size={24} /> : 'Не подарю'}
                             </Button>
                         ) : !isReserved ? (
                             <Button
                                 variant="contained"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleReserve();
-                                }}
+                                onClick={handleReserve}
+                                disabled={isReserving || isReserved}
                             >
-                                Подарю
+                                {isReserving ? <CircularProgress size={24} /> : 'Подарю'}
                             </Button>
                         ) : null
                     )}
