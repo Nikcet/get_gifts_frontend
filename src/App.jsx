@@ -32,7 +32,6 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(isLogin());
   const [userId, setUserId] = useState(getOrCreateTemporaryUserId());
 
-
   const navigate = useNavigate();
 
   const openPopup = (type) => {
