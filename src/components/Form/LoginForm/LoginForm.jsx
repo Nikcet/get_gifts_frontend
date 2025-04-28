@@ -2,7 +2,7 @@ import { TextField, Alert, Box, Button, useTheme, Typography } from '@mui/materi
 import { useState } from 'react';
 import { loginUser } from '@/utils/api';
 
-const LoginForm = ({ onLoginSuccess, onSwitchToRegister  }) => {
+const LoginForm = ({ onLoginSuccess, onSwitchToRegister }) => {
     const [error, setError] = useState('');
     const theme = useTheme();
 
@@ -17,6 +17,9 @@ const LoginForm = ({ onLoginSuccess, onSwitchToRegister  }) => {
                 password: formData.get('password')
             });
             onLoginSuccess(data.user_id);
+            
+            localStorage.setItem('_access_token', data.access_token);
+            localStorage.setItem('_user_id', data.user_id);
         } catch (err) {
             setError(err.message || 'Ошибка авторизации');
         }
