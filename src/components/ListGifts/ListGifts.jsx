@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import Gift from '@/components/Gift/Gift';
+import { NotificationContext } from '../../contexts/NotificationContext';
 // import './ListGifts.css';
 import { useParams } from 'react-router-dom';
 import { getGifts, getGiftsByUserId, addGift } from '@/utils/api';
@@ -22,6 +23,8 @@ const ListGifts = ({ isAuthenticated }) => {
     const [giftLink, setGiftLink] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
+    const showNotification = useContext(NotificationContext);
+
     const userId = params.userId || (isAuthenticated ? localStorage.getItem('_user_id') : '');
 
     useEffect(() => {
@@ -35,7 +38,8 @@ const ListGifts = ({ isAuthenticated }) => {
             // const data = await getGiftsByUserId(userId);
             setGifts(data.gifts);
         } catch (err) {
-            console.log("Ошибка: ", err);
+            console.log("Ошибка при загрузке подарков: ", err);
+            showNotification('Ошибка при загрузке подарков', 'error');
         } finally {
             setIsLoading(false);
         }
@@ -51,12 +55,13 @@ const ListGifts = ({ isAuthenticated }) => {
         try {
             toggleAddGiftPopup();
             await addGift({ link: giftLink });
+            showNotification('Подарок успешно добавлен!', 'success');
             setGiftLink('');
-            setIsLoading(false);
         } catch (err) {
             console.log("Ошибка при добавлении подарка: ", err);
-            setIsLoading(false)
+            showNotification('Ошибка при добавлении подарка', 'error');
         } finally {
+            setIsLoading(false);
             fetchGifts(userId);
         }
     };

@@ -9,6 +9,7 @@ import Popup from './components/Popup/Popup';
 import ListGifts from '@/components/ListGifts/ListGifts';
 import Start from './components/Start/Start';
 import Footer from './components/Footer/Footer';
+import NotificationProvider from './components/NotificationProvider/NotificationProvider';
 // import './App.css';
 import { AuthContext } from './contexts/AuthContext';
 import { UserIdContext } from './contexts/UserIdContext';
@@ -91,39 +92,40 @@ function App() {
   return (
     <AuthContext.Provider value={isAuthenticated}>
       <UserIdContext.Provider value={userId}>
-        <div className='app' style={{ display: 'flex', flexDirection: 'column', minHeight: "100vh" }}>
-          <ThemeProvider theme={darkTheme}>
-            <CssBaseline />
-            <Header
-              isAuthenticated={isAuthenticated}
-              onLogout={logout}
-              onLogin={() => openPopup('login')}
-              onRegister={() => openPopup('register')}
-            />
-            <Popup
-              isOpen={isPopupOpen}
-              onClose={closePopup}
-            >
-              <Form
-                title={formType === 'login' ? 'Вход' : 'Регистрация'}
-                setIsAuth={handleLoginSuccess}
+        <NotificationProvider>
+          <div className='app' style={{ display: 'flex', flexDirection: 'column', minHeight: "100vh" }}>
+            <ThemeProvider theme={darkTheme}>
+              <CssBaseline />
+              <Header
+                isAuthenticated={isAuthenticated}
+                onLogout={logout}
+                onLogin={() => openPopup('login')}
+                onRegister={() => openPopup('register')}
+              />
+              <Popup
+                isOpen={isPopupOpen}
+                onClose={closePopup}
               >
-                {renderForm()}
-              </Form>
-            </Popup>
+                <Form
+                  title={formType === 'login' ? 'Вход' : 'Регистрация'}
+                  setIsAuth={handleLoginSuccess}
+                >
+                  {renderForm()}
+                </Form>
+              </Popup>
 
-            <Box sx={{ flex: 1 }} component='main'>
-              <Routes>
-                <Route path="/gifts/user/:userId" element={<ListGifts isAuthenticated={isAuthenticated} />} />
-                <Route path="/" element={
-                  <Start onRegister={() => openPopup('register')} />
-                } />
-                {/* <Route path="/" element={<ListGifts isAuthenticated={isAuthenticated} />} /> */}
-              </Routes>
-            </Box>
-            <Footer />
-          </ThemeProvider>
-        </div>
+              <Box sx={{ flex: 1 }} component='main'>
+                <Routes>
+                  <Route path="/gifts/user/:userId" element={<ListGifts isAuthenticated={isAuthenticated} />} />
+                  <Route path="/" element={
+                    <Start onRegister={() => openPopup('register')} />
+                  } />
+                </Routes>
+              </Box>
+              <Footer />
+            </ThemeProvider>
+          </div>
+        </NotificationProvider>
       </UserIdContext.Provider>
     </AuthContext.Provider>
   );

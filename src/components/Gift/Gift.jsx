@@ -12,6 +12,7 @@ import {
 import { useState, useContext } from 'react';
 import { UserIdContext } from '../../contexts/UserIdContext';
 import { updateGift } from '@/utils/api';
+import { NotificationContext } from '../../contexts/NotificationContext';
 
 const Gift = ({ gift: initialGift, onDelete }) => {
     // eslint-disable-next-line no-unused-vars
@@ -23,6 +24,8 @@ const Gift = ({ gift: initialGift, onDelete }) => {
     );
     const [isReserving, setIsReserving] = useState(false);
     const [isUnreserving, setIsUnreserving] = useState(false);
+
+    const showNotification = useContext(NotificationContext);
 
     const handleReserve = async (e) => {
         e.stopPropagation();
@@ -38,6 +41,7 @@ const Gift = ({ gift: initialGift, onDelete }) => {
             setIsReserveOwner(true);
         } catch (err) {
             console.error('Ошибка при резервировании:', err);
+            showNotification('Ошибка при резервировании', 'error');
         } finally {
             setIsReserving(false);
         }
@@ -57,6 +61,7 @@ const Gift = ({ gift: initialGift, onDelete }) => {
             setIsReserveOwner(false);
         } catch (err) {
             console.error('Ошибка при снятии резерва:', err);
+            showNotification('Ошибка при снятии резерва', 'error');
         } finally {
             setIsUnreserving(false);
         }
@@ -65,7 +70,12 @@ const Gift = ({ gift: initialGift, onDelete }) => {
     const handleDelete = async (e) => {
         e.stopPropagation();
         if (gift.user_id === userId) {
-            onDelete(gift.id);
+            try {
+                await onDelete(gift.id);
+            } catch (err) {
+                console.log('Ошибка при удалении подарка:', err);
+                showNotification('Ошибка при удалении подарка', 'error');
+            }
         }
     };
 

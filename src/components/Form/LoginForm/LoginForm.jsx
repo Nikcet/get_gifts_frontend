@@ -1,10 +1,14 @@
 import { TextField, Alert, Box, Button, useTheme, Typography } from '@mui/material';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { loginUser } from '@/utils/api';
+import { NotificationContext } from '../../../contexts/NotificationContext';
+
 
 const LoginForm = ({ onLoginSuccess, onSwitchToRegister }) => {
     const [error, setError] = useState('');
     const theme = useTheme();
+
+    const showNotification = useContext(NotificationContext);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -17,11 +21,12 @@ const LoginForm = ({ onLoginSuccess, onSwitchToRegister }) => {
                 password: formData.get('password')
             });
             onLoginSuccess(data.user_id);
-            
+
             localStorage.setItem('_access_token', data.access_token);
             localStorage.setItem('_user_id', data.user_id);
         } catch (err) {
             setError(err.message || 'Ошибка авторизации');
+            showNotification(err.message || 'Ошибка авторизации', 'error');
         }
     };
 
