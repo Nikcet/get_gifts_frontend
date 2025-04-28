@@ -13,6 +13,7 @@ import { UserIdContext } from '../../contexts/UserIdContext';
 import { updateGift } from '@/utils/api';
 
 const Gift = ({ gift: initialGift, onDelete }) => {
+    // eslint-disable-next-line no-unused-vars
     const [gift, setGift] = useState(initialGift);
     const userId = useContext(UserIdContext);
     const [isReserved, setIsReserved] = useState(gift.is_reserved);
