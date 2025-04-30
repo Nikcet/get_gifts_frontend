@@ -3,7 +3,7 @@ import { Box, Typography } from '@mui/material';
 
 const Form = ({ title, children }) => {
     return (
-        <Box sx={{ width: 400, mx: 'auto', p: 3 }}>
+        <Box sx={{ width: "100%", mx: 'auto', p: 2 }}>
             <Typography variant="h4" align="center" gutterBottom>
                 {title}
             </Typography>

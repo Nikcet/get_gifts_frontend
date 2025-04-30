@@ -16,7 +16,7 @@ const Start = ({ onRegister }) => {
             {/* Первый экран */}
             <Box
                 sx={{
-                    height: '80vh',
+                    minHeight: '80vh',
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'center',
@@ -51,24 +51,23 @@ const Start = ({ onRegister }) => {
             {/* Второй экран */}
             <Box
                 sx={{
-                    height: '80vh',
+                    minHeight: '80vh',
                     display: 'flex',
                     alignItems: 'center',
                     bgcolor: 'background.paper',
-                    py: 8,
-                    overflowX: 'auto', // Добавляем скролл при необходимости
+                    // py: 8,
+                    // overflowX: 'auto',
                 }}
             >
                 <Container maxWidth={false} sx={{ px: 4 }}>
                     <Grid
-                        container
+                        container={true}
                         spacing={4}
                         sx={{
-                            flexWrap: 'nowrap', // Запрещаем перенос на новую строку
                             justifyContent: 'center',
                         }}
                     >
-                        <Grid item sx={{ minWidth: 350 }}>
+                        <Grid item sx={{ maxWidth: 350 }}>
                             <Paper elevation={3} sx={{ p: 4, height: '100%' }}>
                                 <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>
                                     Зачем создавать вишлисты?
@@ -79,7 +78,7 @@ const Start = ({ onRegister }) => {
                                 </Typography>
                             </Paper>
                         </Grid>
-                        <Grid item sx={{ minWidth: 350 }}>
+                        <Grid item sx={{ maxWidth: 350 }}>
                             <Paper elevation={3} sx={{ p: 4, height: '100%' }}>
                                 <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>
                                     Для кого вишлисты?
@@ -90,7 +89,7 @@ const Start = ({ onRegister }) => {
                                 </Typography>
                             </Paper>
                         </Grid>
-                        <Grid item sx={{ minWidth: 350 }}>
+                        <Grid item sx={{ maxWidth: 350 }}>
                             <Paper elevation={3} sx={{ p: 4, height: '100%' }}>
                                 <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>
                                     Это платно?
@@ -108,7 +107,7 @@ const Start = ({ onRegister }) => {
             {/* Третий экран */}
             <Box
                 sx={{
-                    height: '60vh',
+                    minHeight: '60vh',
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'center',

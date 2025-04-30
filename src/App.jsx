@@ -10,7 +10,6 @@ import ListGifts from '@/components/ListGifts/ListGifts';
 import Start from './components/Start/Start';
 import Footer from './components/Footer/Footer';
 import NotificationProvider from './components/NotificationProvider/NotificationProvider';
-// import './App.css';
 import { AuthContext } from './contexts/AuthContext';
 import { UserIdContext } from './contexts/UserIdContext';
 import { createTheme, ThemeProvider, CssBaseline, Box } from '@mui/material';

@@ -12,7 +12,7 @@ const Popup = ({ isOpen, onClose, children, title }) => {
             sx={{
                 position: 'absolute',
                 bgcolor: 'background.paper',
-                minWidth: '400px'
+                minWidth: '300px'
             }}
         >
             <IconButton

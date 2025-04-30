@@ -25,13 +25,16 @@ const LoginForm = ({ onLoginSuccess, onSwitchToRegister }) => {
             localStorage.setItem('_access_token', data.access_token);
             localStorage.setItem('_user_id', data.user_id);
         } catch (err) {
-            setError(err.message || 'Ошибка авторизации');
-            showNotification(err.message || 'Ошибка авторизации', 'error');
+            setError(err.message);
+            showNotification(err.message, 'error');
         }
     };
 
     return (
-        <Box component="form" onSubmit={handleSubmit}>
+        <Box
+            component="form"
+            onSubmit={handleSubmit}
+        >
             {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
             <TextField
