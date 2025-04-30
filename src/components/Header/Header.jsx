@@ -32,7 +32,7 @@ const Header = ({ isAuthenticated, onLogout, onRegister, onLogin }) => {
         <AppBar position="static" color="primary" elevation={0}>
             <Toolbar>
                 <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 700 }}>
-                    Whishes Book
+                    WhishesBook
                 </Typography>
 
                 {isAuthenticated ? (

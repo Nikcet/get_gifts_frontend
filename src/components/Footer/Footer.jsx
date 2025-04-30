@@ -1,9 +1,17 @@
-import { Box, Typography, Link, Stack, useTheme } from '@mui/material';
+import {
+    Box,
+    Typography,
+    Link,
+    Stack,
+    useTheme,
+    useMediaQuery,
+} from '@mui/material';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import EmailIcon from '@mui/icons-material/Email';
 
 const Footer = () => {
     const theme = useTheme();
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
     return (
         <Box
@@ -23,7 +31,7 @@ const Footer = () => {
                 alignItems="center"
             >
                 <Typography variant="body2" color="text.secondary">
-                    Задать вопрос 👉
+                    Задать вопрос {isSmallScreen ? '👇' : '👉'} 
                 </Typography>
 
                 <Stack direction="row" spacing={2}>
