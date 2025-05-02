@@ -1,10 +1,9 @@
 import React, { useEffect, useState, useContext } from 'react';
 import Gift from '@/components/Gift/Gift';
 import { NotificationContext } from '../../contexts/NotificationContext';
-// import './ListGifts.css';
 import { useParams } from 'react-router-dom';
 import { getGifts, getGiftsByUserId, addGift } from '@/utils/api';
-import { deleteGift } from '../../utils/api';
+import { deleteGift, pingStatusIGiftAdded } from '../../utils/api';
 import {
     Box,
     Button,
@@ -13,7 +12,8 @@ import {
     DialogTitle,
     DialogContent,
     TextField,
-    Skeleton
+    Skeleton,
+    CircularProgress,
 } from '@mui/material';
 
 const ListGifts = ({ isAuthenticated }) => {
@@ -22,6 +22,7 @@ const ListGifts = ({ isAuthenticated }) => {
     const [isAddGiftPopupOpen, setIsAddGiftPopupOpen] = useState(false);
     const [giftLink, setGiftLink] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [giftsQueue, setGiftsQueue] = useState(0); // Количество подарков в процессе добавления
 
     const showNotification = useContext(NotificationContext);
 
@@ -35,12 +36,11 @@ const ListGifts = ({ isAuthenticated }) => {
         setIsLoading(true);
         try {
             const data = userId ? await getGiftsByUserId(userId) : await getGifts();
-            // const data = await getGiftsByUserId(userId);
             setGifts(data.gifts);
+            setIsLoading(false);
         } catch (err) {
             console.log("Ошибка при загрузке подарков: ", err);
             showNotification('Ошибка при загрузке подарков', 'error');
-        } finally {
             setIsLoading(false);
         }
     };
@@ -51,18 +51,34 @@ const ListGifts = ({ isAuthenticated }) => {
 
     const handleAddGift = async (e) => {
         e.preventDefault();
-        setIsLoading(true);
         try {
             toggleAddGiftPopup();
-            await addGift({ link: giftLink });
-            showNotification('Подарок успешно добавлен!', 'success');
+            let task = await addGift({ link: giftLink });
+            setGiftsQueue(prev => prev + 1);
+            showNotification('Подарок скоро будет добавлен!', 'success');
             setGiftLink('');
+
+            const checkStatus = async (giftId) => {
+                try {
+                    const status = await pingStatusIGiftAdded(giftId);
+                    if (status) {
+                        showNotification('Подарок успешно добавлен!', 'success');
+                        setGiftsQueue(prev => prev - 1);
+                        fetchGifts(userId);
+                    } else {
+                        setTimeout(() => checkStatus(giftId), 30000);
+                    }
+                } catch (err) {
+                    console.error("Status check error:", err);
+                    setGiftsQueue(prev => prev - 1);
+                }
+            };
+
+            checkStatus(task.gift_id);
+
         } catch (err) {
             console.log("Ошибка при добавлении подарка: ", err);
             showNotification('Ошибка при добавлении подарка', 'error');
-        } finally {
-            setIsLoading(false);
-            fetchGifts(userId);
         }
     };
 
@@ -73,54 +89,58 @@ const ListGifts = ({ isAuthenticated }) => {
 
     return (
         <Box sx={{ maxWidth: 800, mx: 'auto', p: 2, my: 4 }}>
-            {
-                gifts.length === 0 ? (
-                    <Box sx={{ textAlign: 'center', mt: 4 }}>
-                        <Typography variant="h6" gutterBottom>
-                            Нет ни одного подарка! 😢
-                        </Typography>
-                        {isAuthenticated && (
-                            <Button
-                                variant="contained"
-                                onClick={toggleAddGiftPopup}
-                                sx={{ mt: 2 }}
-                            >
-                                Добавить подарок (Только с Ozon)
-                            </Button>
-                        )}
+            {isLoading ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+                    <CircularProgress size={60} />
+                </Box>
+            ) : gifts.length === 0 && giftsQueue === 0 ? (
+                <Box sx={{ textAlign: 'center', mt: 4 }}>
+                    <Typography variant="h6" gutterBottom>
+                        Нет ни одного подарка! 😢
+                    </Typography>
+                    {isAuthenticated && (
+                        <Button
+                            variant="contained"
+                            onClick={toggleAddGiftPopup}
+                            sx={{ mt: 2 }}
+                        >
+                            Добавить подарок (Только с Ozon)
+                        </Button>
+                    )}
+                </Box>
+            ) : (
+                <Box>
+                    <Box component="ul" sx={{ p: 0, m: 0 }}>
+                        {gifts.map((gift) => (
+                            <Gift
+                                key={gift.id}
+                                gift={gift}
+                                onDelete={onDeleteGift}
+                            />
+                        ))}
                     </Box>
-                ) : (
-                    <Box>
-                        <Box component="ul" sx={{ p: 0, m: 0 }}>
-                            {gifts.map((gift) => (
-                                <Gift
-                                    key={gift.id}
-                                    gift={gift}
-                                    onDelete={onDeleteGift}
-                                />
-                            ))}
-                        </Box>
-                        {isLoading && <Box>
+                    {Array(giftsQueue).fill(0).map((_, index) => (
+                        <Box key={`skeleton-${index}`}>
                             <Skeleton
                                 variant="rectangular"
                                 width="100%"
                                 height={200}
                                 sx={{ mb: 2, borderRadius: 2 }}
                             />
-                        </Box>}
-                        {isAuthenticated && (
-                            <Box sx={{ textAlign: 'center', mt: 2 }}>
-                                <Button
-                                    variant="contained"
-                                    onClick={toggleAddGiftPopup}
-                                >
-                                    Добавить подарок (только Ozon)
-                                </Button>
-                            </Box>
-                        )}
-                    </Box>
-                )
-            }
+                        </Box>
+                    ))}
+                    {isAuthenticated && (
+                        <Box sx={{ textAlign: 'center', mt: 2 }}>
+                            <Button
+                                variant="contained"
+                                onClick={toggleAddGiftPopup}
+                            >
+                                Добавить подарок (только Ozon)
+                            </Button>
+                        </Box>
+                    )}
+                </Box>
+            )}
 
             <Dialog open={isAddGiftPopupOpen} onClose={toggleAddGiftPopup}>
                 <DialogTitle>Добавить подарок</DialogTitle>
@@ -130,6 +150,7 @@ const ListGifts = ({ isAuthenticated }) => {
                             fullWidth
                             margin="normal"
                             label="Ссылка на подарок"
+                            autoFocus
                             value={giftLink}
                             onChange={(e) => setGiftLink(e.target.value)}
                             required
@@ -138,7 +159,6 @@ const ListGifts = ({ isAuthenticated }) => {
                             type="submit"
                             fullWidth
                             variant="contained"
-                            // disabled={isLoading}
                             sx={{ mt: 3, mb: 2 }}
                         >
                             Добавить
