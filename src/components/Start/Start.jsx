@@ -8,7 +8,7 @@ import {
     useTheme
 } from '@mui/material';
 import { useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { UserIdContext } from '@/contexts/UserIdContext';
 
 const Start = ({ onRegister, isAuthenticated }) => {
