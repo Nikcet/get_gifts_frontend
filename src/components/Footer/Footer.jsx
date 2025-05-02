@@ -20,6 +20,7 @@ const Footer = () => {
                 py: 3,
                 px: 2,
                 mt: 'auto',
+                mb: '50px',
                 backgroundColor: theme.palette.background.paper,
                 borderTop: `1px solid ${theme.palette.divider}`,
             }}
@@ -31,7 +32,7 @@ const Footer = () => {
                 alignItems="center"
             >
                 <Typography variant="body2" color="text.secondary">
-                    Задать вопрос {isSmallScreen ? '👇' : '👉'} 
+                    Задать вопрос разработчику {isSmallScreen ? '👇' : '👉'} 
                 </Typography>
 
                 <Stack direction="row" spacing={2}>
@@ -66,7 +67,7 @@ const Footer = () => {
                         }}
                     >
                         <EmailIcon sx={{ mr: 0.5, fontSize: '1.2rem' }} />
-                        <Typography variant="body2">mstislav.kr@yandex.ru</Typography>
+                        <Typography variant="body2">Email</Typography>
                     </Link>
                 </Stack>
             </Stack>
