@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react';
+import { useNavigate } from 'react-router';
 import Gift from '@/components/Gift/Gift';
 import { NotificationContext } from '../../contexts/NotificationContext';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import { getGifts, getGiftsByUserId, addGift } from '@/utils/api';
 import { deleteGift, pingStatusIGiftAdded } from '../../utils/api';
 import {
@@ -15,6 +16,7 @@ import {
     Skeleton,
     CircularProgress,
 } from '@mui/material';
+import NotFound from '../NotFound/NotFound';
 
 const ListGifts = ({ isAuthenticated }) => {
     const params = useParams();
@@ -22,7 +24,9 @@ const ListGifts = ({ isAuthenticated }) => {
     const [isAddGiftPopupOpen, setIsAddGiftPopupOpen] = useState(false);
     const [giftLink, setGiftLink] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [giftsQueue, setGiftsQueue] = useState(0); // Количество подарков в процессе добавления
+    const [giftsQueue, setGiftsQueue] = useState(0);
+
+    const navigate = useNavigate();
 
     const showNotification = useContext(NotificationContext);
 
@@ -40,8 +44,11 @@ const ListGifts = ({ isAuthenticated }) => {
             setIsLoading(false);
         } catch (err) {
             console.log("Ошибка при загрузке подарков: ", err);
-            showNotification('Ошибка при загрузке подарков', 'error');
+            showNotification(err.message, 'error');
             setIsLoading(false);
+            if (err.statusCode === 404) {
+                return navigate('/');
+            }
         }
     };
 
