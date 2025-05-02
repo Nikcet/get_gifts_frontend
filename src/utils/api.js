@@ -266,3 +266,14 @@ export const deleteGift = async (id) => {
         throw new DefaultError("Произошла неизвестная ошибка при удалении подарка");
     }
 };
+
+export const pingStatusIGiftAdded = async (id) => {
+    try {
+        const response = await fetch(`${API_URL}/gifts/status/${id}`);
+        let processedResponse = onResponse(response);
+        processedResponse = await processedResponse;
+        return processedResponse.status === "success";
+    } catch (err) {
+        throw new DefaultError(`Произошла неизвестная ошибка при получении статуса добавления подарка. ${err}`);
+    }
+}
