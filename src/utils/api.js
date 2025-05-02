@@ -73,9 +73,9 @@ export const getGiftsByUserId = async (userId) => {
     try {
         const response = await fetch(`${API_URL}/gifts/user/${userId}`);
         const processedResponse = onResponse(response);
-
+        
         if (response.status === 404) {
-            throw new NotFoundError("Подарки пользователя не найдены");
+            throw new NotFoundError("Пользователь не найден");
         } else if (response.status === 401) {
             throw new AuthError("Требуется авторизация");
         } else if (response.status === 403) {

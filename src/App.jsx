@@ -1,4 +1,4 @@
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router';
 import { useState } from 'react';
 import { generate } from 'short-uuid';
 import Header from '@/components/Header/Header';
@@ -10,6 +10,7 @@ import ListGifts from '@/components/ListGifts/ListGifts';
 import Start from './components/Start/Start';
 import Footer from './components/Footer/Footer';
 import NotificationProvider from './components/NotificationProvider/NotificationProvider';
+import NotFound from './components/NotFound/NotFound';
 import { AuthContext } from './contexts/AuthContext';
 import { UserIdContext } from './contexts/UserIdContext';
 import { createTheme, ThemeProvider, CssBaseline, Box } from '@mui/material';
@@ -117,8 +118,9 @@ function App() {
                 <Routes>
                   <Route path="/gifts/user/:userId" element={<ListGifts isAuthenticated={isAuthenticated} />} />
                   <Route path="/" element={
-                    <Start onRegister={() => openPopup('register')} />
+                    <Start onRegister={() => openPopup('register')} isAuthenticated={isAuthenticated} />
                   } />
+                  <Route path="*" element={<NotFound />} />
                 </Routes>
               </Box>
               <Footer />

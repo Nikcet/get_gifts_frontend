@@ -7,9 +7,22 @@ import {
     Paper,
     useTheme
 } from '@mui/material';
+import { useContext } from 'react';
+import { useNavigate } from 'react-router';
+import { UserIdContext } from '@/contexts/UserIdContext';
 
-const Start = ({ onRegister }) => {
+const Start = ({ onRegister, isAuthenticated }) => {
     const theme = useTheme();
+    const userId = useContext(UserIdContext);
+    const navigate = useNavigate();
+
+    const handleButtonClick = () => {
+        if (isAuthenticated) {
+            navigate(`/gifts/user/${userId}`);
+        } else {
+            onRegister();
+        }
+    };
 
     return (
         <Box sx={{ bgcolor: 'background.default', color: 'text.primary' }}>
@@ -33,7 +46,7 @@ const Start = ({ onRegister }) => {
                         Добавляйте подарки, делитесь списком с друзьями и получайте именно то, что хотите
                     </Typography>
                     <Button
-                        onClick={onRegister}
+                        onClick={handleButtonClick}
                         variant="contained"
                         size="large"
                         sx={{
@@ -55,8 +68,6 @@ const Start = ({ onRegister }) => {
                     display: 'flex',
                     alignItems: 'center',
                     bgcolor: 'background.paper',
-                    // py: 8,
-                    // overflowX: 'auto',
                 }}
             >
                 <Container maxWidth={false} sx={{ px: 4 }}>
@@ -120,7 +131,7 @@ const Start = ({ onRegister }) => {
                         Готовы создать свой вишлист?
                     </Typography>
                     <Button
-                        onClick={onRegister}
+                        onClick={handleButtonClick}
                         variant="contained"
                         size="large"
                         sx={{
