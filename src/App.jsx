@@ -117,7 +117,7 @@ function App() {
                 <Routes>
                   <Route path="/gifts/user/:userId" element={<ListGifts isAuthenticated={isAuthenticated} />} />
                   <Route path="/" element={
-                    <Start onRegister={() => openPopup('register')} />
+                    <Start onRegister={() => openPopup('register')} isAuthenticated={isAuthenticated} />
                   } />
                 </Routes>
               </Box>
