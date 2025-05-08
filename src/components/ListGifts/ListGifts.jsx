@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router';
 import Gift from '@/components/Gift/Gift';
+import AddGiftButton from '../AddGiftButton/AddGiftButton';
 import { NotificationContext } from '../../contexts/NotificationContext';
 import { useParams } from 'react-router';
-import { getGifts, getGiftsByUserId, addGift } from '@/utils/api';
+import { getGifts, getGiftsByUserId, addGift, getGiftById } from '@/utils/api';
 import { deleteGift, pingStatusIGiftAdded } from '../../utils/api';
 import {
     Box,
@@ -16,7 +17,6 @@ import {
     Skeleton,
     CircularProgress,
 } from '@mui/material';
-import NotFound from '../NotFound/NotFound';
 
 const ListGifts = ({ isAuthenticated }) => {
     const params = useParams();
@@ -24,7 +24,7 @@ const ListGifts = ({ isAuthenticated }) => {
     const [isAddGiftPopupOpen, setIsAddGiftPopupOpen] = useState(false);
     const [giftLink, setGiftLink] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [giftsQueue, setGiftsQueue] = useState(0);
+    const [giftsQueue, setGiftsQueue] = useState([]);
 
     const navigate = useNavigate();
 
@@ -61,7 +61,7 @@ const ListGifts = ({ isAuthenticated }) => {
         try {
             toggleAddGiftPopup();
             let task = await addGift({ link: giftLink });
-            setGiftsQueue(prev => prev + 1);
+            setGiftsQueue(prev => [...prev, task.gift_id]);
             showNotification('Подарок скоро будет добавлен!', 'success');
             setGiftLink('');
 
@@ -70,10 +70,11 @@ const ListGifts = ({ isAuthenticated }) => {
                     const status = await pingStatusIGiftAdded(giftId);
                     if (status) {
                         showNotification('Подарок успешно добавлен!', 'success');
-                        setGiftsQueue(prev => prev - 1);
-                        fetchGifts(userId);
+                        setGiftsQueue(prev => prev.filter(id => id !== giftId));
+                        const data = await getGiftById(giftId);
+                        setGifts(prev => [...prev, data.gift])
                     } else {
-                        setTimeout(() => checkStatus(giftId), 30000);
+                        setTimeout(() => checkStatus(giftId), 20000);
                     }
                 } catch (err) {
                     console.error("Status check error:", err);
@@ -90,8 +91,15 @@ const ListGifts = ({ isAuthenticated }) => {
     };
 
     const onDeleteGift = async (giftId) => {
-        await deleteGift(giftId);
-        fetchGifts(userId);
+        try {
+            setGifts(prev => prev.filter(gift => gift.id !== giftId));
+            await deleteGift(giftId);
+        } catch (err) {
+            console.log("Ошибка при удалении подарка: ", err);
+            showNotification('Ошибка при удалении подарка', 'error');
+            const data = await getGiftById(giftId);
+            setGifts(prev => [...prev, data.gift])
+        }
     }
 
     return (
@@ -100,19 +108,13 @@ const ListGifts = ({ isAuthenticated }) => {
                 <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
                     <CircularProgress size={60} />
                 </Box>
-            ) : gifts.length === 0 && giftsQueue === 0 ? (
+            ) : gifts.length === 0 && giftsQueue.length === 0 ? (
                 <Box sx={{ textAlign: 'center', mt: 4 }}>
                     <Typography variant="h6" gutterBottom>
                         Нет ни одного подарка! 😢
                     </Typography>
                     {isAuthenticated && (
-                        <Button
-                            variant="contained"
-                            onClick={toggleAddGiftPopup}
-                            sx={{ mt: 2 }}
-                        >
-                            Добавить подарок (Только с Ozon)
-                        </Button>
+                        <AddGiftButton onClick={toggleAddGiftPopup} />
                     )}
                 </Box>
             ) : (
@@ -125,26 +127,19 @@ const ListGifts = ({ isAuthenticated }) => {
                                 onDelete={onDeleteGift}
                             />
                         ))}
+                        {giftsQueue.map((giftId) => (
+                            <Box key={`skeleton-${giftId}`}>
+                                <Skeleton
+                                    variant="rectangular"
+                                    width="100%"
+                                    height={200}
+                                    sx={{ mb: 2, borderRadius: 2 }}
+                                />
+                            </Box>
+                        ))}
                     </Box>
-                    {Array(giftsQueue).fill(0).map((_, index) => (
-                        <Box key={`skeleton-${index}`}>
-                            <Skeleton
-                                variant="rectangular"
-                                width="100%"
-                                height={200}
-                                sx={{ mb: 2, borderRadius: 2 }}
-                            />
-                        </Box>
-                    ))}
                     {isAuthenticated && (
-                        <Box sx={{ textAlign: 'center', mt: 2 }}>
-                            <Button
-                                variant="contained"
-                                onClick={toggleAddGiftPopup}
-                            >
-                                Добавить подарок (только Ozon)
-                            </Button>
-                        </Box>
+                        <AddGiftButton onClick={toggleAddGiftPopup} fixed />
                     )}
                 </Box>
             )}
@@ -153,14 +148,17 @@ const ListGifts = ({ isAuthenticated }) => {
                 <DialogTitle>Добавить подарок</DialogTitle>
                 <DialogContent>
                     <Box component="form" onSubmit={handleAddGift} sx={{ mt: 1 }}>
+                        <Typography gutterBottom>
+                            Вставьте ссылку на подарок с маркетплейса Ozon
+                        </Typography>
                         <TextField
                             fullWidth
                             margin="normal"
-                            label="Ссылка на подарок"
-                            autoFocus
+                            label="Вставьте ссылку"
                             value={giftLink}
                             onChange={(e) => setGiftLink(e.target.value)}
                             required
+                            autoFocus
                         />
                         <Button
                             type="submit"
