@@ -87,17 +87,28 @@ const Gift = ({ gift: initialGift, onDelete }) => {
                 position: 'relative',
                 '&:hover': {
                     boxShadow: 3
-                }
+                },
+                flexDirection: { xs: 'column', sm: 'row' } // Меняем направление на колонку для мобильных
             }}
         >
             <CardMedia
                 component="img"
-                sx={{ width: 200, height: 200, objectFit: 'cover' }}
+                sx={{
+                    width: { xs: '100%', sm: 200 }, // На мобильных полная ширина
+                    height: { xs: 200, sm: 200 }, // Фиксированная высота
+                    objectFit: 'cover',
+                    flexShrink: 0
+                }}
                 image={gift.photo}
                 alt={gift.name}
             />
 
-            <CardContent sx={{ flex: 1, minWidth: 0 }}>
+            <CardContent sx={{
+                flex: 1,
+                minWidth: 0,
+                position: 'relative',
+                pb: { xs: 6, sm: 2 } // Добавляем отступ снизу для мобильных
+            }}>
                 <Typography variant="h6" noWrap>{gift.name}</Typography>
 
                 <Box sx={{ my: 1 }}>
@@ -105,7 +116,11 @@ const Gift = ({ gift: initialGift, onDelete }) => {
                         href={gift.link}
                         target="_blank"
                         variant="text"
-                        sx={{ p: 0, textTransform: 'none' }}
+                        sx={{
+                            p: 0,
+                            textTransform: 'none',
+                            fontSize: { xs: '0.875rem', sm: '1rem' } // Уменьшаем шрифт на мобильных
+                        }}
                     >
                         Ссылка на подарок
                     </Button>
@@ -114,21 +129,28 @@ const Gift = ({ gift: initialGift, onDelete }) => {
                 <Chip
                     label={gift.cost > 0 ? `${gift.cost} ₽` : "Не известно"}
                     color="primary"
-                    sx={{ mt: 1, mb: 1, }}
+                    size="small"
+                    sx={{ mt: 1, mb: 1 }}
                 />
+
                 <Stack
                     direction="row"
                     alignItems="center"
                     spacing={2}
-                    position={"absolute"}
-                    bottom={16}
-                    right={16}
+                    sx={{
+                        position: { xs: 'static', sm: 'absolute' },
+                        bottom: { xs: 'auto', sm: 16 },
+                        right: { xs: 'auto', sm: 16 },
+                        mt: { xs: 2, sm: 0 },
+                        flexWrap: 'wrap', // Разрешаем перенос элементов
+                        justifyContent: 'flex-end'
+                    }}
                 >
-
                     {isReserved && (
                         <Chip
                             label={isReserveOwner ? "Вы подарите" : "Кто-то уже дарит"}
                             color={isReserveOwner ? "success" : "info"}
+                            size="small"
                         />
                     )}
 
@@ -139,16 +161,18 @@ const Gift = ({ gift: initialGift, onDelete }) => {
                                 color="error"
                                 onClick={handleUnreserve}
                                 disabled={isUnreserving}
+                                size="small"
                             >
-                                {isUnreserving ? <CircularProgress size={24} /> : 'Не подарю'}
+                                {isUnreserving ? <CircularProgress size={20} /> : 'Не подарю'}
                             </Button>
                         ) : !isReserved ? (
                             <Button
                                 variant="contained"
                                 onClick={handleReserve}
                                 disabled={isReserving || isReserved}
+                                size="small"
                             >
-                                {isReserving ? <CircularProgress size={24} /> : 'Подарю'}
+                                {isReserving ? <CircularProgress size={20} /> : 'Подарю'}
                             </Button>
                         ) : null
                     )}
@@ -156,6 +180,7 @@ const Gift = ({ gift: initialGift, onDelete }) => {
                         <Button
                             onClick={handleDelete}
                             color="error"
+                            size="small"
                         >
                             Удалить
                         </Button>

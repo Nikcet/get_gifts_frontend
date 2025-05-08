@@ -1,7 +1,7 @@
 {
-  "name": "getgiftsfrontend",
-  "private": true,
-  "version": "0.0.0",
+  "name": "get_gifts_frontend",
+  "private": false,
+  "version": "0.1.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
