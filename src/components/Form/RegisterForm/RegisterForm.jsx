@@ -26,6 +26,8 @@ const RegisterForm = ({ onSwitchToLogin }) => {
                 username: formData.get('username'),
                 password: password
             });
+            onSwitchToLogin();
+            
         } catch (err) {
             setError(err.message || 'Ошибка регистрации');
             showNotification(err.message || 'Ошибка регистрации', 'error');
