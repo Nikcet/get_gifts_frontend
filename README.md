@@ -1,4 +1,4 @@
-# Frontend of Wishesbook.ru service
+# Frontend of wishlist service: [wishesbook.ru](https://wishesbook.ru)
 
 ## Stack
 1. React
