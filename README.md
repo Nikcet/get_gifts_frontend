@@ -14,5 +14,8 @@ First you should run [backend](https://github.com/Nikcet/get_gifts_backend).
 npm install
 ```
 ```bash
+cp .env.example .env
+```
+```bash
 npm run dev
 ```

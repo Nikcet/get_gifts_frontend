@@ -1,5 +1,3 @@
-const PRODUCTION = false;
-const API_URL = PRODUCTION ? "https://wishesbook.ru/api" : 'http://localhost:8000';
+const API_URL = import.meta.env.VITE_API_URL;
 
-
-export {API_URL}
+export { API_URL };
