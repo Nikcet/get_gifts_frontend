@@ -7,9 +7,12 @@
 4. MUI
 
 ## Fast run
+First you should run [backend](https://github.com/Nikcet/get_gifts_backend).
+
+## Run frontend
 ```bash
 npm install
 ```
 ```bash
-npm run build
+npm run dev
 ```
